@@ -1,0 +1,199 @@
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<style>
+			.mui-row.mui-fullscreen>[class*="mui-col-"] {
+				height: 100%;
+			}
+			
+			.mui-col-xs-3,
+			.mui-col-xs-9 {
+				overflow-y: auto;
+				height: 100%;
+			}
+			
+			.mui-segmented-control .mui-control-item {
+				line-height: 50px;
+				width: 100%;
+			}
+			
+			.mui-control-content {
+				display: block;
+			}
+			
+			.mui-control-content > .mui-table-view > .mui-table-view-cell{padding:0;}
+			.mui-segmented-control.mui-segmented-control-inverted.mui-segmented-control-vertical .mui-control-item{
+				/*color: #888888;*/
+			}
+			.mui-segmented-control.mui-segmented-control-inverted.mui-segmented-control-vertical .mui-control-item.mui-active{
+				background: #fff;
+			}
+			.mui-segmented-control.mui-segmented-control-inverted.mui-segmented-control-vertical .mui-control-item,
+			.mui-segmented-control.mui-segmented-control-inverted.mui-segmented-control-vertical .mui-control-item.mui-active{
+				/*background-color: #FFFFFF;*/
+				border-bottom: none;
+				font-size: 0.75rem;
+				position: relative;
+			}
+			.mui-segmented-control.mui-segmented-control-inverted.mui-segmented-control-vertical .mui-control-item:after,
+			.mui-segmented-control.mui-segmented-control-inverted.mui-segmented-control-vertical .mui-control-item.mui-active:after{
+				position: absolute;	
+				content: '';
+				width: 200%;
+				height: 1px;
+				background: #ccc;
+				left: -50%;
+				bottom: 0;
+				-webkit-transform:scale(.5)
+				
+			}
+			.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-object{height: 50px;}
+			
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">分类导航</h1>
+		</header>
+
+		<div class="mui-content mui-row mui-fullscreen" id="sortfied">
+			<div class="mui-col-xs-3">
+				<div id="segmentedControls" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-vertical">
+					<a class="mui-control-item" v-bind:data-index="index" href="#content1" :class="[(key==index)?'mui-active':'']" v-for="(item,key) in data" ref="muia" @tap="leftTab(key)">{{item.name}}</a>
+
+				</div>
+			</div>
+			<div id="segmentedControlContents" class="mui-col-xs-9" style="border-left: 1px solid #c8c7cc;" v-on:scroll="scorllDiv">
+				<div id="content1" class="mui-control-content" v-for="(cont,conKey) in data" ref="contentul">
+					<!--<span></span>-->
+					<span class="mui-badge mui-badge-purple mui-btn-purple mui-pull-right" style="margin: 0.5rem;">{{cont.name}}</span>
+					<div style="clear: both;">
+						
+					</div>
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">
+							
+							<ul class="mui-table-view mui-grid-view" style="">
+ 								<li class="mui-table-view-cell mui-media mui-col-xs-4" @tap="goodsList(cont.id)">
+						            <a href="#">
+						                <img class="mui-media-object" :src="cont.imgurl?cont.imgurl:'../img/entry.png'">
+						                
+						                <div class="mui-media-body">{{cont.name}}</div></a></li>
+						        <li class="mui-table-view-cell mui-media mui-col-xs-4" v-for="key in cont.son" @tap="goodsList(key.id)">
+						            <a href="#">
+						                <img class="mui-media-object" :src="key.imgurl?key.imgurl:'../img/entry.png'">
+						                <div class="mui-media-body">{{key.name}}</div></a></li>
+						      
+						    </ul> 
+						</li>
+
+					</ul>
+				</div>
+                <div v-bind:style={'height':height}></div>
+				
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/config.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/function.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+//			mui.plusReady(function(){
+				
+
+			var app = new Vue({
+				el:'#sortfied',
+				data:{
+					data:[],
+					index:0,
+					scroll:'',
+					height:0,
+					temp:0
+				},
+				created:function(){
+					this.$nextTick(function(){
+						//this.getGroup();
+						for(var i=0;i<20;i++){
+							var data = {name:'选项'+i,
+										title:'这是分类标题（可选）',
+										cont:[
+												{name:i+"分类详情"},
+												{name:i+"分类详情"},
+												{name:i+"分类详情"}
+											]
+										}
+							this.data.push(data);
+						}
+					})
+				},
+				methods:{
+					getGroup:function(){
+
+					},
+					goodsList:function(type_id){
+
+					},
+					loads:function(){
+						this.$nextTick(function(){
+							console.log(JSON.parse(JSON.stringify(this.data)))
+							var j=0;
+							for(i in this.$refs.contentul){
+								console.log(this.$refs.contentul[i].offsetTop)
+								
+								this.data[i].ot=this.$refs.contentul[i].offsetTop;
+								
+								this.data[i].ch=this.$refs.contentul[i].offsetTop+this.$refs.contentul[i].clientHeight;
+								
+								this.temp=this.$refs.contentul[i].clientHeight;
+							}
+							this.height=(this.$el.childNodes[2].clientHeight-this.temp)<=0?0:this.$el.childNodes[2].clientHeight-this.temp+10;
+
+						})
+					},
+					leftTab:function(key){
+						console.log(this.data);
+						this.index = key
+						this.$refs.contentul[key].scrollIntoView()
+					},
+					scorllDiv:function(e){
+						this.scroll = e.target.scrollTop;
+
+						for(i in this.data){
+							if(e.target.scrollTop>=this.data[i].ot&&e.target.scrollTop<=this.data[i].ch-10){
+								(this.index!=i) && (this.index=i)&&console.log(this.index);
+								this.$refs.muia[this.index].scrollIntoView()
+								break;
+							}
+						}
+					}
+					
+				},
+				updated:function(){
+					
+					this.$nextTick(function(){
+						this.loads();
+					})
+				}
+				
+			})
+//		})
+		</script>
+
+	</body>
+
+</html>
